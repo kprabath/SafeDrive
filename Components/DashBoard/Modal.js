@@ -1,13 +1,15 @@
-import React, { useState } from 'react'
-import { Modal, Text, TextInput, View, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { Modal, Text, TextInput, View, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator , Keyboard } from 'react-native'
 import RadioBtn from 'react-native-vector-icons/MaterialIcons'
 const MyInput = (props) => {
     return (
         <View style={Styles.MyInputContainer}>
             <Text style={[Styles.MyInputTitle, Styles.regular]}>{props.title}</Text>
-            <TextInput editable={props.editable} onChangeText={text => {
+            <TextInput onFocus={() => {
+                if (props.hasError) props.cleanError()
+            }} keyboardType={props.type} defaultValue={props.default} editable={props.editable} onChangeText={text => {
                 props.click(text)
-            }} style={[Styles.MyInputInput, Styles.regular]} value={props.value} />
+            }} style={[Styles.MyInputInput, Styles.regular, props.hasError ? { borderBottomColor: 'red', } : null]} value={props.value} />
             {props.isActive && <View style={Styles.MyInputRadioView}>
                 <RadioBtn name='radio-button-checked' size={25} color='grey' />
             </View>}
@@ -31,23 +33,50 @@ const Loader = () => {
 }
 const MyModal = (props) => {
 
-    function loadData() {
-        setLoading(true)
-        setTimeout(() => {
-            setLoading(false)
-            setbtnDes("LETS START DRIVING")
-        }, 2000)
+    function cleanUp() {
+        setTime(props.time)
+        setLocation(props.location)
+        setHuboReading(props.huboReading)
+        setTimeErro(false)
+        setLocationError(false)
+        setHuboError(false)
     }
-    let [time, setTime] = useState("3:25 pm , 20 Feb 2020")
-    let [location, setLocation] = useState("Queen St , 123");
-    let [huboReading, setHuboReading] = useState("123456");
+
+    function validate() {
+      
+        if (!time ) setTimeErro(true)
+        if (!location ) setLocationError(true)
+        if (!huboReading ) setHuboError(true)
+
+        return time && location && huboReading;
+    }
+    function loadData() {
+        Keyboard.dismiss()
+        if (validate()) {
+            setLoading(true)
+            setTimeout(() => {
+                setLoading(false)
+                props.formDataListner({
+                    timeWithDate: time  ,
+                    location: location  ,
+                    huboReading: huboReading 
+                })
+                props.change()
+            }, 2000)
+        }
+    }
+    let [time, setTime] = useState()
+    let [hasTimeError, setTimeErro] = useState(false)
+    let [hasLocationError, setLocationError] = useState(false)
+    let [hasHuboError, setHuboError] = useState(false)
+    let [location, setLocation] = useState();
+    let [huboReading, setHuboReading] = useState();
     let [isLoading, setLoading] = useState(false)
-    let [btnDes, setbtnDes] = useState("CONFIRM AND LOG");
     return (<Modal
         transparent={true}
         visible={props.visible}
         onRequestClose={() => {
-            setbtnDes("CONFIRM AND LOG")
+            cleanUp()
             props.change()
         }}>
         <ScrollView style={{
@@ -63,28 +92,40 @@ const MyModal = (props) => {
                 <Text style={[Styles.ModalTitle, Styles.bold]}>
                     Start Driving
          </Text>
-
                 <MyInput
+                    
+                    cleanError={() => setTimeErro(false)}
+                    hasError={hasTimeError}
+                    default={props.time}
                     editable={!isLoading}
                     click={setTime}
                     title='Time and Date'
                     value={time} />
                 <MyInput
+                    
+                    cleanError={() => setLocationError(false)}
+                    hasError={hasLocationError}
+                    default={props.location}
                     editable={!isLoading}
                     click={setLocation}
                     title='Location'
                     value={location} isActive />
                 <MyInput
+                   
+                    cleanError={() => setHuboError(false)}
+                    hasError={hasHuboError}
+                    type='number-pad'
+                    default={props.huboReading}
                     editable={!isLoading}
                     click={setHuboReading}
                     title='Current Hubo Reading'
                     value={huboReading} />
                 {isLoading && <Loader />}
                 <TouchableOpacity style={Styles.ModalButton} onPress={loadData}>
-                    <Text style={[Styles.ModalButtonText, { color: '#fff', }, Styles.regular]}>{btnDes}</Text>
+                    <Text style={[Styles.ModalButtonText, { color: '#fff', }, Styles.regular]}>START DRIVING</Text>
                 </TouchableOpacity>
                 <Text onPress={() => {
-                    setbtnDes("CONFIRM AND LOG")
+                    cleanUp()
                     props.change()
                 }} style={[Styles.ModalButtonText, { color: '#ff5500' }, Styles.regular]}>CANCEL</Text>
             </View>

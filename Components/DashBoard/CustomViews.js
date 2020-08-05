@@ -34,7 +34,7 @@ export const MyBlurView = () => {
 
 export const Remarks = () => {
   return <View style={Styles.Remarks}>
-    <Text style = {Styles.regular}>Driver's Last Remarks:</Text>
+    <Text style={Styles.regular}>Driver's Last Remarks:</Text>
     <Text style={Styles.bold}>Gate Access Code is 8500000000 .Ask Mike</Text>
     <View
       style={Styles.Hr}
@@ -45,7 +45,7 @@ export const Remarks = () => {
 export const StarTray = (props) => {
   let tray = [];
   let { count } = props;
-  for (let i = 0; i < 5; i++) tray.push(<Icon name='star' style = {{margin:4}} size={10} color={i < count ? 'gold' : 'lightgrey'} />);
+  for (let i = 0; i < 5; i++) tray.push(<Icon name='star' style={{ margin: 2 }} size={10} color={i < count ? 'gold' : 'lightgrey'} />);
   return (
     <>
       {
@@ -59,7 +59,7 @@ export const TitleView = () => {
   return (
     <View style={Styles.TitleView}>
       <Icon name='book' size={30} color="white" />
-      <Text style={[Styles.TitleViewText , Styles.bold]}>
+      <Text style={[Styles.TitleViewText, Styles.bold]}>
         DriveTime
       </Text>
 
@@ -82,12 +82,38 @@ export const ItemView = (props) => {
 export const Footer = () => {
   return (
     <View style={Styles.Footer}>
-      <Icon name='truck' size={25} color='orange' />
-      <Icon name='location-arrow' size={25} />
-      <Icon name='book' size={25} />
-      <Icon2 name='hammer-screwdriver' size={25} />
+      <Icon name='truck' size={23} color='orange' />
+      <Icon name='location-arrow' size={23} />
+      <Icon name='book' size={23} />
+      <Icon2 name='hammer-screwdriver' size={23} />
 
     </View>
+  )
+}
+
+const DetailItem = (props) => {
+  return (
+    <View style={{
+      flex: 4,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center'
+    }}>
+      <Text style={[Styles.bold, { fontSize: 15 , textAlign:'center' }]} >{props.title}</Text>
+      <Text style={[Styles.regular, { fontSize: 11 , textAlign:'center'  }]} >{props.value}</Text>
+    </View>
+  )
+}
+
+const DetailView = (props) => {
+  return (
+
+    <View style={{ display: 'flex', flexDirection: 'row', paddingTop: 28, paddingBottom: 28 }}>
+      <DetailItem title='Time and Date ' value = {props.time} />
+      <DetailItem title='Location'  value = {props.location}/>
+      <DetailItem title='Hubo Reading'  value = {props.huboReading}/>
+    </View>
+
   )
 }
 
@@ -97,12 +123,15 @@ export const LargeTile = (props) => {
       <View style={[Styles.LargeTileContainer, {
         backgroundColor: props.color,
       }]}>
+       { !props.isDetailView ?  <>
         <Image source={props.src} style={{
           height: 50,
           width: 50
         }} />
         <Text style={[{ fontSize: 26} , Styles.bold]}>{props.description}</Text>
-
+        </> :
+        <DetailView time = {props.time} location = {props.location} huboReading = {props.huboReading}/> 
+        }
       </View>
 
     </TouchableOpacity>
@@ -123,7 +152,7 @@ export const SmallTile = (props) => {
       }} />
       <Text style={[{
         fontSize: 20
-      } , Styles.regular]}>{props.title}</Text>
+      }, Styles.regular]}>{props.title}</Text>
 
     </View>
 
@@ -131,14 +160,14 @@ export const SmallTile = (props) => {
 }
 
 const Styles = StyleSheet.create({
-  regular:{
+  regular: {
 
-    fontFamily:"PTSansNarrow-Regular"
+    fontFamily: "PTSansNarrow-Regular"
 
-  } , 
-  bold:{
-    fontFamily:'PTSansNarrow-Bold'
-  } , 
+  },
+  bold: {
+    fontFamily: 'PTSansNarrow-Bold'
+  },
   smallTileContainer: {
     display: 'flex',
     flex: 6,
@@ -165,6 +194,8 @@ const Styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     padding: 15,
+    paddingLeft:20 , 
+    paddingRight: 20 ,
     left: 0,
     display: 'flex',
     flexDirection: 'row',
@@ -191,19 +222,21 @@ const Styles = StyleSheet.create({
   TitleViewText: {
     marginLeft: 10,
     fontSize: 32,
-    color: 'white', 
-  } , 
-  Hr:{
+    color: 'white',
+  },
+  Hr: {
     marginTop: 5,
     borderBottomColor: '#E8CACA',
     borderBottomWidth: 1,
-  } , 
-  Remarks:{
+  },
+  Remarks: {
     display: 'flex',
     flexDirection: 'column',
-    marginTop: 8
-  } , 
-  BlurView:{
+    marginTop: 8 , 
+    paddingRight:7 , 
+    paddingLeft:7 
+  },
+  BlurView: {
     position: "absolute",
     top: 0,
     left: 0,
