@@ -12,14 +12,158 @@ import {
   View,
   Text,
   Dimensions,
+  Modal,
+  TextInput,
   Image,
-  TouchableOpacity
+  Button,
+  TouchableOpacity,
+
 } from 'react-native';
-import { Svg, Path, Ellipse } from 'react-native-svg'
+import { Svg, Path } from 'react-native-svg'
 import { BlurView } from '@react-native-community/blur';
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
+import RadioBtn from 'react-native-vector-icons/MaterialIcons'
 const WiDTH = Dimensions.get('screen').width;
+
+
+const MyInput = (props) => {
+  return (
+    <View style={{
+      display: 'flex',
+      flexDirection: 'column',
+      marginBottom: 20
+    }}>
+      <Text style={{
+        color: 'grey',
+        fontSize: 12,
+        fontFamily: 'Open Sans'
+      }}>{props.title}</Text>
+      <TextInput style={{
+
+        fontSize: 18,
+        paddingBottom: -2,
+        paddingLeft: -1,
+        paddingTop: 5,
+        textAlign: 'left',
+        borderBottomColor: '#E8CACA',
+        //  backgroundColor:'red' ,
+
+
+        // Add this to specify bottom border color
+        borderBottomWidth: 1
+      }} value={props.value} />
+
+      {props.isActive && <View style={{
+        position: 'absolute',
+        right: 5,
+        bottom: 2
+      }}>
+        <RadioBtn name='radio-button-checked' size={25} color='grey' />
+      </View>}
+
+
+    </View>
+
+  )
+}
+
+const MyModal = (props) => {
+
+  return (<Modal
+    transparent={true}
+    visible={props.visible}
+    onRequestClose={props.change}
+  >
+    <View style={{
+      flex: 1,
+
+      backgroundColor: 'rgba(0 , 0 , 0 , 0.5)',
+      // opacity:0.5,
+      justifyContent: "center",
+      // alignItems: "center",
+    }}>
+      <View style={{
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 15,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+      }}>
+        <Text style={{
+          fontWeight: 'bold',
+          fontSize: 28,
+          marginBottom: 20,
+          textAlign: 'center'
+        }}>
+
+          Start Driving
+
+                   </Text>
+
+        <MyInput title='Time and Date' value='3:25 PM , 20 Feb 2020' />
+        <MyInput title='Location' value='Queen St , 123' isActive />
+        <MyInput title='Current Hubo Reading' value='123456' />
+        <TouchableOpacity style={{
+          backgroundColor: '#ff5500',
+          borderRadius: 30,
+          padding: 10,
+          paddingTop: 15,
+          paddingBottom: 15,
+          marginBottom: 5
+        }}>
+          <Text style={{
+            textAlign: 'center',
+            fontSize: 18,
+            color: '#fff',
+
+          }}>CONFIRM AND LOG</Text>
+
+        </TouchableOpacity>
+        <Text style={{
+          textAlign: 'center',
+          fontSize: 18,
+          color: '#ff5500'
+        }}>CANCEL</Text>
+
+      </View>
+
+
+    </View>
+    {/* <Text>{this.state.position }</Text> */}
+
+
+  </Modal>)
+
+}
+
+const Remarks = () => {
+  return <View style={{
+    display: 'flex',
+    flexDirection: 'column',
+    marginTop: 8
+  }}>
+
+    <Text>Drivers Last Remarks:</Text>
+    <Text style={{
+      fontWeight: 'bold'
+    }}>Gate Access Code is 8500000000 .Ask Mike</Text>
+    <View
+      style={{
+        marginTop: 5,
+        borderBottomColor: '#E8CACA',
+        borderBottomWidth: 1,
+      }}
+    />
+  </View>
+}
 
 const MyBlurView = () => {
   return (<BlurView
@@ -37,15 +181,16 @@ const MyBlurView = () => {
 }
 
 const WaveView = () => {
-  return <View style={{ backgroundColor: '#ff5500', height: 60 }}>
+  return <View style={{ backgroundColor: '#ff5500', height: 70 }}>
     <Svg
       height="100%"
+      preserveAspectRatio='none'
       width="100%"
-      viewBox="0 0 1440 200"
-      style={{ position: 'absolute', top: 35 }} >
+      viewBox="0 0 500 150"
+      style={{ position: 'absolute', top: 45 }} >
       <Path
         fill="#ff5500"
-        d="M0,128L80,133.3C160,139,320,149,480,165.3C640,181,800,203,960,197.3C1120,192,1280,160,1360,144L1440,128L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z" />
+        d="M-1.97,87.33 C64.05,5.44 441.58,210.69 501.41,78.45 L500.00,0.00 L0.00,0.00 Z" />
     </Svg>
   </View>
 }
@@ -105,7 +250,6 @@ const Footer = () => {
 
       <Icon name='truck' size={25} color='orange' />
       <Icon name='location-arrow' size={25} />
-
       <Icon name='book' size={25} />
       <Icon2 name='hammer-screwdriver' size={25} />
 
@@ -236,10 +380,9 @@ class App extends React.Component {
                 fontWeight: 'bold'
               }}>114,000km</Text>
               <Text style={{
-                fontSize: 10
+                fontSize: 10,
+                marginTop: -5
               }}>Hubometer</Text>
-
-
             </View>
             <View style={{
               display: 'flex',
@@ -255,7 +398,8 @@ class App extends React.Component {
 
               <Text style={{
                 fontWeight: 'bold',
-                fontSize: 28
+                fontSize: 28,
+                marginTop: -10
               }}>Idle</Text>
               <Text>Current Status</Text>
               <View style={{
@@ -265,8 +409,6 @@ class App extends React.Component {
 
                 <StarTray count={4} />
               </View>
-
-
             </View>
             <View style={{
               display: 'flex',
@@ -314,25 +456,8 @@ class App extends React.Component {
 
 
           </View>
-          <View style={{
-            display: 'flex',
-            flexDirection: 'column',
-            marginTop: 8
-          }}>
 
-            <Text>Drivers Last Remarks:</Text>
-            <Text style={{
-              fontWeight: 'bold'
-            }}>Gate Access Code is 8500000000 .Ask Mike</Text>
-            <View
-              style={{
-                marginTop: 5,
-                borderBottomColor: '#E8CACA',
-                borderBottomWidth: 1,
-              }}
-            />
-          </View>
-
+          <Remarks />
 
         </View>
 
@@ -341,6 +466,7 @@ class App extends React.Component {
         {
           this.state.isModelVisible ? <MyBlurView /> : null
         }
+        <MyModal change={this.changeModalVisibilty} visible={this.state.isModelVisible} />
 
       </View>
     )
